@@ -1,68 +1,162 @@
-//Getting all required elements
-const inputField = document.querySelector(".input-field textarea"),
-    todoLists = document.querySelector(".todoLists"),
-    pendingNum = document.querySelector(".pending-num"),
-    clearButton = document.querySelector(".clear-button");
 
-//we will call this function while adding, deleting and checking-unchecking the task
-function allTasks() {
-    let tasks = document.querySelectorAll(".pending");
+fetchTasks()
 
-    //if tasks' length is 0 then pending num text content will be no, if not then pending num value will be task's length
-    pendingNum.textContent = tasks.length === 0 ? "no" : tasks.length;
+function fetchTasks() {
 
-    let allLists = document.querySelectorAll(".list");
-    if (allLists.length > 0) {
-        todoLists.style.marginTop = "20px";
-        clearButton.style.pointerEvents = "auto";
-        return;
-    }
-    todoLists.style.marginTop = "0px";
-    clearButton.style.pointerEvents = "none";
+    let url = `http://localhost:8080/tasks`
+
+    fetch(url, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    })
+
+        .then(res => res.json())
+        .then(res => {
+            console.log(res);
+
+            let tasks = res;
+
+            let tableHtml = ''
+            for (let index in tasks) {
+                const task = tasks[index]
+                tableHtml += taskRow(task)
+            }
+
+            document.getElementById('tasksDiv').innerHTML = tableHtml
+        })
 }
 
-//add task while we put value in text area and press enter
-inputField.addEventListener("keyup", (e) => {
-    let inputVal = inputField.value.trim(); //trim fuction removes space of front and back of the inputed value
+function taskRow(task) {
+    const taskId = task.id
 
-    //if enter button is clicked and inputed value length is greated than 0.
-    if (e.key === "Enter" && inputVal.length > 0) {
-        let liTag = ` <li class="list pending" onclick="handleStatus(this)">
- 
-            <!-- TODO edit-->
-          <input type="checkbox" style="display:none"/>
-          <div class="uil uil-edit"></div>
-          
-          
-          <span class="task">${inputVal}</span>
-          <i class="uil uil-trash" onclick="deleteTask(this)"></i>
-           
-        </li>`;
+    const tr =
+        `<div class="card mb-3" id="task2-${taskId}" style="justify-content: center">
+              <div class="card-body mb-3" id="task-${taskId}">
+                    <h5 class="card-title">${task.title}</h5>
+                    <p class="card-text">${task.content}</p>
+                    <button onclick="deleteTask(${taskId})" class="btn btn-primary btn-lg btn btn-danger">Delete</button>
+                <button type="button" onclick="openModal(${taskId})" class="btn btn-primary btn-lg btn btn" data-bs-toggle="modal" data-bs-target="#exampleModal">Edit</button>
+              </div>
+        </div>`
 
-        todoLists.insertAdjacentHTML("beforeend", liTag); //inserting li tag inside the todolist div
-        inputField.value = ""; //removing value from input field
-        allTasks();
-    }
-});
-
-//checking and unchecking the checkbox while we click on the task
-function handleStatus(e) {
-    const checkbox = e.querySelector("input"); //getting checkbox
-    checkbox.checked = checkbox.checked ? false : true;
-
-    // tu zrobic jesli checked to zrobic menu z editem
-    e.classList.toggle("pending");
-    allTasks();
+    return tr
 }
 
-//deleting task while we click on the delete icon.
-function deleteTask(e) {
-    e.parentElement.remove(); //getting parent element and remove it
-    allTasks();
+function addTask() {
+    const title = document.getElementById("title");
+    const content = document.getElementById("content");
+
+    fetch(`http://localhost:8080/tasks`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            title: title.value,
+            content: content.value
+        })
+    })
+        .then(response => {
+            if (!response.ok) {
+                return response.text().then(text => { return Promise.reject(text) })
+            } else {
+                return response.json();
+            }
+        })
+        .then(task => {
+            if((task.title.length > 0) && (task.content.length > 0) ) {
+                let taskTableBodyElement = document.getElementById('tasksDiv')
+                let tableHtml = taskTableBodyElement.innerHTML + taskRow(task)
+                taskTableBodyElement.innerHTML = tableHtml
+            }
+        })
+
 }
 
-//deleting all the tasks while we click on the clear button.
-clearButton.addEventListener("click", () => {
-    todoLists.innerHTML = "";
-    allTasks();
-});
+
+function deleteTask(taskId) {
+
+    fetch(`http://localhost:8080/tasks/${taskId}`, {
+        method: 'DELETE'
+    })
+        .then(() => {
+            let row = document.getElementById(`task-${taskId}`)
+            row.remove();
+            let row2 = document.getElementById(`task2-${taskId}`)
+            row2.style.visibility='hidden'
+        })
+}
+
+function updateTask(taskId) {
+    const editTitle = document.getElementById('editTitle').value
+    const editContent = document.getElementById('editContent').value
+
+    console.log('edit title: ')
+    console.log(editTitle)
+
+
+    fetch(`http://localhost:8080/tasks/${taskId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            title: editTitle,
+            content: editContent
+        })
+    })
+        .then(response => {
+            if (!response.ok) {
+                return response.text().then(text => { return Promise.reject(text) })
+            } else {
+                return response.json();
+            }
+        })
+        .then(task => {
+            // wyswietlanie
+            const row = document.getElementById(`task-${taskId}`)
+            row.querySelector('.title').innerHTML = task.title
+            row.querySelector('.content').innerHTML = task.content
+        })
+}
+
+function openModal(taskId) {
+    fetch(`http://localhost:8080/tasks/${taskId}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    })
+        .then(res => res.json())
+        .then(res => {
+
+            console.log(res)
+            const updateForm = document.getElementById("updateForm");
+
+            console.log('title')
+            console.log(res.title)
+
+            //wyswietlanie value w formie
+            updateForm.querySelector('#editTitle').value = res.title
+            updateForm.querySelector('#editContent').value = res.content
+            updateForm.style.display = "block"
+
+            const submitButton = updateForm.querySelector('button[type="submit"]')
+
+            let newSubmitButton = submitButton.cloneNode(true);
+            newSubmitButton.addEventListener("click", function() {
+                updateTask(taskId)
+            })
+            submitButton.replaceWith(newSubmitButton); // usuniecie starych event listenerów
+        })
+}
+
+
+
+var myModal = document.getElementById('myModal')
+var myInput = document.getElementById('myInput')
+
+
+

@@ -15,13 +15,28 @@ public class TaskController {
     }
 
     @GetMapping
-    List<Task> getTasks(){
+    List<Task> getTasks() {
         return taskService.getTasks();
+    }
+
+    @GetMapping("/{id}")
+    public Task getTask(@PathVariable long id) {
+        return taskService.getTask(id);
     }
 
     @PostMapping
     public Task createTask(@RequestBody Task newTask) {
         return taskService.createTask(newTask);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteTask(@PathVariable long id) {
+        taskService.deleteTask(id);
+    }
+
+    @PutMapping("/{id}")
+    public Task updateTask(@PathVariable long id, @RequestBody Task existingTask) {
+        return taskService.updateTask(id,existingTask);
     }
 
 
