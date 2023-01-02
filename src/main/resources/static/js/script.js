@@ -1,15 +1,20 @@
 
 fetchTasks()
 
-function fetchTasks() {
+function getHeaders() {
+    const token = document.getElementsByName("_csrf")[0].getAttribute('content')
+    const headerName =  document.getElementsByName("_csrf_header")[0].getAttribute('content')
+    const headers = {'Content-Type': 'application/json'}
+    headers[headerName] = token
+    return headers
+}
 
+function fetchTasks() {
     let url = `http://localhost:8080/tasks`
 
     fetch(url, {
         method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        },
+        headers: getHeaders(),
     })
 
         .then(res => res.json())
@@ -50,9 +55,7 @@ function addTask() {
 
     fetch(`http://localhost:8080/tasks`, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
+        headers: getHeaders(),
         body: JSON.stringify({
             title: title.value,
             content: content.value
@@ -79,7 +82,8 @@ function addTask() {
 function deleteTask(taskId) {
 
     fetch(`http://localhost:8080/tasks/${taskId}`, {
-        method: 'DELETE'
+        method: 'DELETE',
+        headers: getHeaders()
     })
         .then(() => {
             let row = document.getElementById(`task-${taskId}`)
@@ -99,9 +103,7 @@ function updateTask(taskId) {
 
     fetch(`http://localhost:8080/tasks/${taskId}`, {
         method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json'
-        },
+        headers: getHeaders(),
         body: JSON.stringify({
             title: editTitle,
             content: editContent
@@ -125,9 +127,7 @@ function updateTask(taskId) {
 function openModal(taskId) {
     fetch(`http://localhost:8080/tasks/${taskId}`, {
         method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        },
+        headers: getHeaders()
     })
         .then(res => res.json())
         .then(res => {
