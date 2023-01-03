@@ -1,19 +1,17 @@
-// TODO Pagination
-// let page = 0
-// let size = 5
+let page = 0
+let size = 5
 
 fetchTasks()
 
-// TODO Pagination
-// function loadNextPage() {
-//     page += 1
-//     fetchUsers()
-// }
-//
-// function loadPreviousPage() {
-//     page -= 1
-//     fetchUsers()
-// }
+function loadNextPage() {
+    page += 1
+    fetchTasks()
+}
+
+function loadPreviousPage() {
+    page -= 1
+    fetchTasks()
+}
 
 function getHeaders() {
     const token = document.getElementsByName("_csrf")[0].getAttribute('content')
@@ -24,7 +22,8 @@ function getHeaders() {
 }
 
 function fetchTasks() {
-    let url = `http://localhost:8080/tasks`
+    //let url = `http://localhost:8080/tasks`
+    let url = `http://localhost:8080/tasks?page=${page}&size=${size}`
 
     fetch(url, {
         method: 'GET',
@@ -35,13 +34,27 @@ function fetchTasks() {
         .then(res => {
             console.log(res);
 
-            let tasks = res;
-
+            let tasks = res.items;
             let tableHtml = ''
             for (let index in tasks) {
                 const task = tasks[index]
                 tableHtml += taskRow(task)
             }
+
+            const previousPageButton = document.getElementById('previousPageButton');
+            const nextPageButton = document.getElementById('nextPageButton');
+
+            const lastPage = res.totalPages-1;
+
+            if(page === lastPage){
+                nextPageButton.disabled = true;
+            }
+            if(page !== lastPage){
+                nextPageButton.disabled = false;
+            }
+            previousPageButton.disabled = page === 0;
+
+            document.getElementById('listSize').innerHTML = `[${res.currentPage+1}/${lastPage+1}]`
 
             document.getElementById('tasksDiv').innerHTML = tableHtml
         })
@@ -75,11 +88,11 @@ function addTask() {
             content: content.value
         })
     })
-        .then(response => {
-            if (!response.ok) {
-                return response.text().then(text => { return Promise.reject(text) })
+        .then(task => {
+            if (!task.ok) {
+                return task.text().then(text => { return Promise.reject(text) })
             } else {
-                return response.json();
+                return task.json();
             }
         })
         .then(task => {
@@ -87,6 +100,7 @@ function addTask() {
                 let taskTableBodyElement = document.getElementById('tasksDiv')
                 let tableHtml = taskTableBodyElement.innerHTML + taskRow(task)
                 taskTableBodyElement.innerHTML = tableHtml
+                document.getElementById('listSize').innerHTML = `[${res.currentPage+1}/${lastPage+1}]`
             }
         })
 
