@@ -13,6 +13,11 @@ function loadPreviousPage() {
     fetchTasks()
 }
 
+function loadPage(number) {
+    page = number
+    fetchTasks()
+}
+
 function getHeaders() {
     const token = document.getElementsByName("_csrf")[0].getAttribute('content')
     const headerName = document.getElementsByName("_csrf_header")[0].getAttribute('content')
@@ -74,8 +79,8 @@ function taskRow(task) {
                     <h5 class="card-title">${task.title}</h5>
                     <p class="card-text">${task.content}</p>
                     <div class="position-absolute top-0 start-2 mt-2 mb-2"><p class="card-text">22.05.2023 &nbsp; 15:17</p></div>
-                <div class="d-grid gap-1 col-1 mx-auto">
-                    <button type="button" onclick="openModal(${taskId})" class="btn btn-primary lg" data-bs-toggle="modal" data-bs-target="#exampleModal">\u2700</button>	
+                <div class="d-grid gap-1 col-2 mx-auto">
+                    <button type="button" onclick="openModal(${taskId})" class="btn btn-primary lg" data-bs-toggle="modal" data-bs-target="#exampleModal">Edit task</button>	
                 </div>
                 <button onclick="deleteTask(${taskId})" class="bi bi-trash position-absolute top-0 end-0 btn btn-primary btn-lg btn btn-danger">\u2718</button>
               </div>
@@ -88,8 +93,8 @@ function addTask() {
     const title = document.getElementById("title");
     const content = document.getElementById("content");
 
-    // const time = document.getElementById("time");
-    // const date = document.getElementById("date");
+    const datetime = document.getElementById("datetime");
+    console.log("datetime: ",datetime)
 
     fetch(`http://localhost:8080/tasks`, {
         method: 'POST',
@@ -113,6 +118,7 @@ function addTask() {
                 let taskTableBodyElement = document.getElementById('tasksDiv')
                 let tableHtml = taskTableBodyElement.innerHTML + taskRow(task)
                 taskTableBodyElement.innerHTML = tableHtml
+                fetchTasks()
             }
         })
 
@@ -130,6 +136,7 @@ function deleteTask(taskId) {
             row.remove();
             let row2 = document.getElementById(`task2-${taskId}`)
             row2.style.visibility = 'hidden'
+            fetchTasks()
         })
 }
 
