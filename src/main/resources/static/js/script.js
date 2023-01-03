@@ -15,14 +15,15 @@ function loadPreviousPage() {
 
 function getHeaders() {
     const token = document.getElementsByName("_csrf")[0].getAttribute('content')
-    const headerName =  document.getElementsByName("_csrf_header")[0].getAttribute('content')
-    const headers = {'Content-Type': 'application/json'}
+    const headerName = document.getElementsByName("_csrf_header")[0].getAttribute('content')
+    const headers = {
+        'Content-Type': 'application/json'
+    }
     headers[headerName] = token
     return headers
 }
 
 function fetchTasks() {
-    //let url = `http://localhost:8080/tasks`
     let url = `http://localhost:8080/tasks?page=${page}&size=${size}`
 
     fetch(url, {
@@ -44,32 +45,39 @@ function fetchTasks() {
             const previousPageButton = document.getElementById('previousPageButton');
             const nextPageButton = document.getElementById('nextPageButton');
 
-            const lastPage = res.totalPages-1;
+            const lastPage = res.totalPages - 1;
 
-            if(page === lastPage){
+            if (page === lastPage) {
                 nextPageButton.disabled = true;
             }
-            if(page !== lastPage){
+            if (page !== lastPage) {
                 nextPageButton.disabled = false;
+            }
+            if (tasks.length === 0) {
+                nextPageButton.disabled = true;
+                previousPageButton.disabled = true;
             }
             previousPageButton.disabled = page === 0;
 
-            document.getElementById('listSize').innerHTML = `[${res.currentPage+1}/${lastPage+1}]`
+            document.getElementById('listSize').innerHTML = `[${res.currentPage + 1}/${lastPage + 1}]`
 
             document.getElementById('tasksDiv').innerHTML = tableHtml
+
         })
 }
 
 function taskRow(task) {
     const taskId = task.id
 
-    const tr =
-        `<div class="card mb-3" id="task2-${taskId}" style="justify-content: center">
+    const tr = `<div class="card mb-3" id="task2-${taskId}" style="justify-content: center">
               <div class="card-body mb-3" id="task-${taskId}">
                     <h5 class="card-title">${task.title}</h5>
                     <p class="card-text">${task.content}</p>
-                    <button onclick="deleteTask(${taskId})" class="btn btn-primary btn-lg btn btn-danger">Delete</button>
-                <button type="button" onclick="openModal(${taskId})" class="btn btn-primary btn-lg btn btn" data-bs-toggle="modal" data-bs-target="#exampleModal">Edit</button>
+                    <div class="position-absolute top-0 start-2 mt-2 mb-2"><p class="card-text">22.05.2023 &nbsp; 15:17</p></div>
+                <div class="d-grid gap-1 col-1 mx-auto">
+                    <button type="button" onclick="openModal(${taskId})" class="btn btn-primary lg" data-bs-toggle="modal" data-bs-target="#exampleModal">\u2700</button>	
+                </div>
+                <button onclick="deleteTask(${taskId})" class="bi bi-trash position-absolute top-0 end-0 btn btn-primary btn-lg btn btn-danger">\u2718</button>
               </div>
         </div>`
 
@@ -79,6 +87,9 @@ function taskRow(task) {
 function addTask() {
     const title = document.getElementById("title");
     const content = document.getElementById("content");
+
+    // const time = document.getElementById("time");
+    // const date = document.getElementById("date");
 
     fetch(`http://localhost:8080/tasks`, {
         method: 'POST',
@@ -90,17 +101,18 @@ function addTask() {
     })
         .then(task => {
             if (!task.ok) {
-                return task.text().then(text => { return Promise.reject(text) })
+                return task.text().then(text => {
+                    return Promise.reject(text)
+                })
             } else {
                 return task.json();
             }
         })
         .then(task => {
-            if((task.title.length > 0) && (task.content.length > 0) ) {
+            if ((task.title.length > 0) && (task.content.length > 0)) {
                 let taskTableBodyElement = document.getElementById('tasksDiv')
                 let tableHtml = taskTableBodyElement.innerHTML + taskRow(task)
                 taskTableBodyElement.innerHTML = tableHtml
-                document.getElementById('listSize').innerHTML = `[${res.currentPage+1}/${lastPage+1}]`
             }
         })
 
@@ -117,7 +129,7 @@ function deleteTask(taskId) {
             let row = document.getElementById(`task-${taskId}`)
             row.remove();
             let row2 = document.getElementById(`task2-${taskId}`)
-            row2.style.visibility='hidden'
+            row2.style.visibility = 'hidden'
         })
 }
 
@@ -139,7 +151,9 @@ function updateTask(taskId) {
     })
         .then(response => {
             if (!response.ok) {
-                return response.text().then(text => { return Promise.reject(text) })
+                return response.text().then(text => {
+                    return Promise.reject(text)
+                })
             } else {
                 return response.json();
             }
@@ -182,9 +196,5 @@ function openModal(taskId) {
 }
 
 
-
 var myModal = document.getElementById('myModal')
 var myInput = document.getElementById('myInput')
-
-
-

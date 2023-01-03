@@ -15,7 +15,7 @@
 <!-- Responsive navbar-->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
     <div class="container px-lg-5">
-        <a class="navbar-brand fs-4">TaskApp </a>
+        <a class="navbar-brand fs-4" href="">TaskApp </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
@@ -34,7 +34,7 @@
                     <div class="form-group row mb-3">
                         <div class="col-md-3"></div>
                         <div class="col-md-6">
-                            <h2 class="display-6 fw-bold mb-3 text-center">Add task</h2>
+                            <h2 class="display-6 fw-bold mb-3 text-center">Schedule your task!</h2>
                             <input type="text" class="form-control" id="title" placeholder="title" value=""
                                    aria-describedby="title">
                         </div>
@@ -48,9 +48,9 @@
                                 <textarea class="form-control" placeholder="content" id="content" rows="4" maxlength="1500"></textarea>
                             </div>
                             <div class="cs-form mb-3">
-                                <input type="time" />
+                                <input style="width: 137px;" type="time" id="time"/>
                             </div>
-                            <input type="date">
+                            <input type="date" id="date">
                         </div>
                         <div class="col-md-3"></div>
                     </div>
@@ -101,18 +101,12 @@
     <div class="p-4 p-lg-5 bg-light rounded-3 text-center">
         <div class="pt-6">
             <div class="container px-lg-5 mt-4">
-
-<!--                <div class="card mb-3" style="justify-content: center">-->
-<!--                    <button type="button" class="btn btn-primary btn-sm">Small button</button>-->
-<!--                    <button type="button" class="btn btn-secondary btn-sm">Small button</button>-->
-<!--                </div>-->
-
                 <div id="tasksDiv">
                     </div>
                 <div id="listSize"></div>
                 <div>
-                    <button class="paginationButton" id="previousPageButton" onclick="loadPreviousPage()">Previous</button>
-                    <button class="paginationButton" id="nextPageButton" onclick="loadNextPage()">Next</button>
+                    <button class="btn btn-dark" id="previousPageButton" onclick="loadPreviousPage()">Previous</button>
+                    <button  class="btn btn-dark" id="nextPageButton" onclick="loadNextPage()">Next</button>
                 </div>
                 </div>
             </div>
