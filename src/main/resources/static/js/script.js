@@ -1,5 +1,19 @@
+// TODO Pagination
+// let page = 0
+// let size = 5
 
 fetchTasks()
+
+// TODO Pagination
+// function loadNextPage() {
+//     page += 1
+//     fetchUsers()
+// }
+//
+// function loadPreviousPage() {
+//     page -= 1
+//     fetchUsers()
+// }
 
 function getHeaders() {
     const token = document.getElementsByName("_csrf")[0].getAttribute('content')
