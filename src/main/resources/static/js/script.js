@@ -64,7 +64,7 @@ function fetchTasks() {
             }
             previousPageButton.disabled = page === 0;
 
-            document.getElementById('listSize').innerHTML = `[${res.currentPage + 1}/${lastPage + 1}]`
+            document.getElementById('listSize').innerHTML = `<div class="h5">[${res.currentPage + 1}/${lastPage + 1}]</div>`
 
             document.getElementById('tasksDiv').innerHTML = tableHtml
 
@@ -74,12 +74,16 @@ function fetchTasks() {
 function taskRow(task) {
     const taskId = task.id
 
+    const dateTime = task.dateTime.toString()
+    const date = dateTime.slice(0,10)
+    const time = dateTime.slice(11,19)
+
     const tr = `<div class="card mb-3" id="task2-${taskId}" style="justify-content: center">
               <div class="card-body mb-3" id="task-${taskId}">
                     <h5 class="card-title">${task.title}</h5>
                     <p class="card-text">${task.content}</p>
 <!--                    22.05.2023 &nbsp; 15:17-->
-                    <div class="position-absolute top-0 start-2 mt-2 mb-2"><p class="card-text">${task.dateTime}</p></div>
+                    <div class="position-absolute top-0 start-2 mt-2 mb-2 h6"><p class="card-text">${date} &nbsp; ${time}</p></div>
                 <div class="d-grid gap-1 col-2 mx-auto">
                     <button type="button" onclick="openModal(${taskId})" class="btn btn-primary lg" data-bs-toggle="modal" data-bs-target="#exampleModal">Edit task</button>	
                 </div>
@@ -94,7 +98,16 @@ function addTask() {
     const title = document.getElementById("title");
     const content = document.getElementById("content");
     const time = document.getElementById("time");
-    console.log("datetime: ",time)
+
+    if(title.value === "") {
+        document.getElementById("titleAlert").hidden = false;
+    }
+    if(content.value === "") {
+        document.getElementById("contentAlert").hidden = false;
+    }
+    if(time.value === "") {
+        document.getElementById("timeAlert").hidden = false;
+    }
 
     fetch(`http://localhost:8080/tasks`, {
         method: 'POST',
@@ -105,6 +118,7 @@ function addTask() {
             time: time.value
         })
     })
+
         .then(task => {
             if (!task.ok) {
                 return task.text().then(text => {
@@ -120,11 +134,10 @@ function addTask() {
                 let tableHtml = taskTableBodyElement.innerHTML + taskRow(task)
                 taskTableBodyElement.innerHTML = tableHtml
                 fetchTasks()
+
             }
         })
-
 }
-
 
 function deleteTask(taskId) {
 
@@ -202,7 +215,6 @@ function openModal(taskId) {
             submitButton.replaceWith(newSubmitButton); // usuniecie starych event listenerów
         })
 }
-
 
 var myModal = document.getElementById('myModal')
 var myInput = document.getElementById('myInput')

@@ -1,76 +1,21 @@
 package dev.psulej.taskapp.task;
 
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Service;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Service
 public class TaskService {
+    private final TaskRepository taskRepository;
 
-    private final TaskRowMapper taskRowMapper;
-
-    public TaskService(TaskRowMapper taskRowMapper, NamedParameterJdbcTemplate jdbcTemplate) {
-        this.taskRowMapper = taskRowMapper;
-        this.jdbcTemplate = jdbcTemplate;
+    public TaskService(TaskRepository taskRepository) {
+        this.taskRepository = taskRepository;
     }
-
-    private static String getOrderByParameter(String sort) {
-        Map<String, String> orderByColumns = new HashMap<>();
-        orderByColumns.put("id", "id");
-
-        String sortColumnName = orderByColumns.getOrDefault(sort, "id");
-        return sortColumnName;
-    }
-
-
-    private NamedParameterJdbcTemplate jdbcTemplate;
 
     public PaginationResponse<Task> getPage(int page, int size, String sort) {
-        String sql = "SELECT id, title, content,date_time FROM tasks WHERE 1 = 1";
-        String countSql = "SELECT count(*) FROM tasks WHERE 1 = 1";
-
-        Map<String, Object> parameters = new HashMap<>();
-
-        String sortColumnName = getOrderByParameter(sort);
-        sql += " ORDER BY " + sortColumnName;
-        sql += " LIMIT " + size;
-        sql += " OFFSET  " + page * size;
-
-        List<Task> tasks = jdbcTemplate.query(sql, parameters, taskRowMapper);
-
-        RowMapper<Long> countRowMapper = new RowMapper<>() {
-            @Override
-            public Long mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return rs.getLong(1);
-            }
-        };
-
-        Long totalItems = jdbcTemplate.queryForObject(countSql, parameters, countRowMapper);
-        long totalPages = (long) (Math.ceil(totalItems / (size * 1.0)));
-
-        int currentPage = page;
-
-        PaginationResponse<Task> response = new PaginationResponse<>(totalItems, totalPages, currentPage, tasks);
-        return response;
+        return taskRepository.getPage(page, size, sort);
     }
 
-
     public Task get(long id) {
-        String sql = "SELECT id, title, content, date_time FROM tasks WHERE id = :id";
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("id", id);
-
-        Task task = jdbcTemplate.queryForObject(sql, parameters, taskRowMapper);
-        return task;
+        return taskRepository.get(id);
     }
 
     public Task create(Task newTask) {
@@ -80,46 +25,27 @@ public class TaskService {
         if (newTask.content.length() == 0) {
             throw new IllegalArgumentException("Content cannot be empty");
         }
+        if (newTask.dateTime == null) {
+            throw new IllegalArgumentException("Date must be selected");
+        }
 
-        String sql = """
-                INSERT INTO tasks(id, title, content, date_time) 
-                VALUES (nextval('tasks_seq'), :title, :content, :dateTime)
-                """;
-
-        HashMap<String, Object> parameters = new HashMap<>();
-
-        parameters.put("title", newTask.title);
-        parameters.put("content", newTask.content);
-        parameters.put("dateTime", newTask.dateTime);
-
-        KeyHolder key = new GeneratedKeyHolder(); // zwraca id dla taska
-        jdbcTemplate.update(sql, new MapSqlParameterSource(parameters), key, new String[]{"id"});
-
-        long taskId = key.getKey().longValue();
-        return new Task(taskId, newTask.title, newTask.content, newTask.dateTime);
-
+        return taskRepository.create(newTask);
     }
 
     public void delete(long id) {
-        String sql = "DELETE FROM tasks WHERE id = :id";
-        HashMap<String, Object> parameters = new HashMap<>();
-        parameters.put("id", id);
-        jdbcTemplate.update(sql, parameters);
+        taskRepository.delete(id);
     }
 
     public Task update(long id, Task existingTask) {
-        String sql = "UPDATE tasks SET title = :title, content = :content WHERE id = :id";
-        HashMap<String, Object> parameters = new HashMap<>();
-        parameters.put("id", id);
-        parameters.put("title", existingTask.title);
-        parameters.put("content", existingTask.content);
-        jdbcTemplate.update(sql, parameters);
-
-        return new Task(
-                id,
-                existingTask.title,
-                existingTask.content,
-                existingTask.dateTime
-        );
+        if (existingTask.title.length() == 0) {
+            throw new IllegalArgumentException("Title cannot be empty");
+        }
+        if (existingTask.content.length() == 0) {
+            throw new IllegalArgumentException("Content cannot be empty");
+        }
+        if (existingTask.dateTime == null) {
+            throw new IllegalArgumentException("Date must be selected");
+        }
+        return taskRepository.update(id, existingTask);
     }
 }
