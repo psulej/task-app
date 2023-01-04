@@ -78,7 +78,8 @@ function taskRow(task) {
               <div class="card-body mb-3" id="task-${taskId}">
                     <h5 class="card-title">${task.title}</h5>
                     <p class="card-text">${task.content}</p>
-                    <div class="position-absolute top-0 start-2 mt-2 mb-2"><p class="card-text">22.05.2023 &nbsp; 15:17</p></div>
+<!--                    22.05.2023 &nbsp; 15:17-->
+                    <div class="position-absolute top-0 start-2 mt-2 mb-2"><p class="card-text">${task.dateTime}</p></div>
                 <div class="d-grid gap-1 col-2 mx-auto">
                     <button type="button" onclick="openModal(${taskId})" class="btn btn-primary lg" data-bs-toggle="modal" data-bs-target="#exampleModal">Edit task</button>	
                 </div>
@@ -92,16 +93,16 @@ function taskRow(task) {
 function addTask() {
     const title = document.getElementById("title");
     const content = document.getElementById("content");
-
-    const datetime = document.getElementById("datetime");
-    console.log("datetime: ",datetime)
+    const time = document.getElementById("time");
+    console.log("datetime: ",time)
 
     fetch(`http://localhost:8080/tasks`, {
         method: 'POST',
         headers: getHeaders(),
         body: JSON.stringify({
             title: title.value,
-            content: content.value
+            content: content.value,
+            time: time.value
         })
     })
         .then(task => {

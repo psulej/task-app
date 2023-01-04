@@ -6,13 +6,13 @@ public class Task {
     Long id;
     String title;
     String content;
-//    LocalDateTime time;
+    LocalDateTime dateTime;
 
-    public Task(Long id, String title, String content) {
+    public Task(Long id, String title, String content,LocalDateTime time) {
         this.id = id;
         this.title = title;
         this.content = content;
-//        this.time = time;
+        this.dateTime = time;
     }
 
     public Long getId() {
@@ -27,5 +27,5 @@ public class Task {
         return content;
     }
 
-//    public LocalDateTime getTime() { return time; }
+    public LocalDateTime getDateTime() { return dateTime; }
 }
