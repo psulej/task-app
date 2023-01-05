@@ -27,13 +27,21 @@
             Write correct login!
           </div>
           <div class="mb-3"></div>
-          <input type="text" class="form-control" id="registerPassword" placeholder="registerPasswordAlert" value=""
+          <input type="text" class="form-control" id="registerPassword" placeholder="register password" value=""
                  aria-describedby="registerPassword">
+          <div class="alert alert-danger" role="alert" hidden id="registerPasswordAlert">
+            Write correct password!
+          </div>
           <div class="mb-3"></div>
           <input type="text" class="form-control" id="registerEmail" placeholder="email" value=""
                  aria-describedby="registerEmailAlert">
+          <div class="alert alert-danger" role="alert" hidden id="registerEmailAlert">
+            Write correct email!
+          </div>
           <div class="mb-3"></div>
           <button type="submit" id="add" style="width: 10rem;" onclick="registerUser()" class="btn btn-primary btn-lg btn btn-dark gap-2" >Sign up</button>
+          <div class="mt-3 alert alert-danger" role="alert" hidden id="inputsError">
+            Fill all inputs!</div>
         </div>
         <div class="col"></div>
       </div>

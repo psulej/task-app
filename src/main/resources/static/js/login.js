@@ -1,7 +1,3 @@
-
-var myModal = document.getElementById('myModal')
-var myInput = document.getElementById('myInput')
-
 function getHeaders() {
     const token = document.getElementsByName("_csrf")[0].getAttribute('content')
     const headerName = document.getElementsByName("_csrf_header")[0].getAttribute('content')
@@ -12,42 +8,30 @@ function getHeaders() {
     return headers
 }
 
-function registerUser() {
+function loginUser() {
 
-    if (!validateInputs()) {
+    if (!validateLoginInputs()) {
         console.log('Form is invalid')
         return
     }
 
-    const login = document.getElementById("registerLogin");
-    const password = document.getElementById("registerPassword");
-    const email = document.getElementById("registerEmail");
+    const login = document.getElementById("login");
+    const password = document.getElementById("password ");
 
-    // if(login.value === "") {
-    //     document.getElementById("registerLoginAlert").hidden = false;
-    // }
-    // if(password.value === "") {
-    //     document.getElementById("registerPasswordAlert").hidden = false;
-    // }
-    // if(email.value === "") {
-    //     document.getElementById("registerEmailAlert").hidden = false;
-    // }
-
-    fetch(`http://localhost:8080/registration`, {
+    fetch(`http://localhost:8080/login`, {
         method: 'POST',
         headers: getHeaders(),
         body: JSON.stringify({
             login: login.value,
             password: password.value,
-            email: email.value
         })
     })
         .then(() => {
-            window.location.replace("http://localhost:8080/login");
+            //window.location.replace("http://localhost:8080");
         })
 }
 
-function validateInputs(){
+function validateLoginInputs(){
 
     const Validation = function (value, regex, errorField) {
         this.value = value
@@ -69,39 +53,32 @@ function validateInputs(){
     }
 
     const loginValidation = new Validation(
-        document.getElementById("registerLogin").value,
+        document.getElementById("login").value,
         /^[\w.-]{0,19}[0-9a-zA-Z]$/,
-        document.getElementById('registerLoginAlert')
-    )
-
-    const emailValidation = new Validation(
-        document.getElementById("registerEmail").value,
-        /^([a-zA-Z0-9])+([.a-zA-Z0-9_-])*@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-]+)+/,
-        document.getElementById('registerEmailAlert')
+        document.getElementById('loginAlert')
     )
 
     const passwordValidation = new Validation(
-        document.getElementById("registerPassword").value,
+        document.getElementById("password").value,
         /^[\w.-]{0,19}[0-9a-zA-Z]$/,
-        document.getElementById('registerPasswordAlert')
+        document.getElementById('passwordAlert')
     )
 
     const validations = [
-        loginValidation,emailValidation,passwordValidation
+        loginValidation,passwordValidation
     ]
 
     let valid = true
     validations.forEach(validation => {
             if (validation.validate()) {
                 validation.hideError()
-                document.getElementById("inputsError").hidden = true;
+                document.getElementById("loginInputsError").hidden = true;
             } else {
                 validation.showError()
                 valid = false
             }
             if(validation.getValue() === null || validation.getValue().length === 0){
-                // document.getElementById('inputsError').style.visibility = "visible"
-                document.getElementById("inputsError").hidden = false;
+                document.getElementById("loginInputsError").hidden = false;
             }
         }
     )

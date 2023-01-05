@@ -42,7 +42,7 @@ public class SecurityConfig {
                 .antMatchers("/registration").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .formLogin().permitAll();
+                .formLogin().loginPage("/login").permitAll();
         return http.build();
     }
 }
