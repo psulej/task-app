@@ -12183,3 +12183,15 @@ textarea.form-control-lg {
     width: 4rem;
     font-size: 2rem;
 }
+
+.redBorder {
+    border-color: red;
+}
+
+.orangeBorder {
+    border-color: orange;
+}
+
+.greenBorder {
+    border-color: green;
+}

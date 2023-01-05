@@ -1,20 +1,14 @@
 package dev.psulej.taskapp.user;
 
-public class User {
-    Long id;
+public class RegistrationRequest {
     String login;
     String password;
     String email;
 
-    public User(Long id, String login, String password, String email) {
-        this.id = id;
+    public RegistrationRequest(String login, String password, String email) {
         this.login = login;
         this.password = password;
         this.email = email;
-    }
-
-    public Long getId() {
-        return id;
     }
 
     public String getLogin() {
@@ -25,5 +19,7 @@ public class User {
         return password;
     }
 
-    public String getEmail() { return email; }
+    public String getEmail() {
+        return email;
+    }
 }

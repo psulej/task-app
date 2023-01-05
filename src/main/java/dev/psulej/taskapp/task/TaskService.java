@@ -4,9 +4,13 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class TaskService {
+
+    private final TaskValidator taskValidator;
     private final TaskRepository taskRepository;
 
-    public TaskService(TaskRepository taskRepository) {
+
+    public TaskService(TaskValidator taskValidator, TaskRepository taskRepository) {
+        this.taskValidator = taskValidator;
         this.taskRepository = taskRepository;
     }
 
@@ -19,16 +23,7 @@ public class TaskService {
     }
 
     public Task create(Task newTask) {
-        if (newTask.title.length() == 0) {
-            throw new IllegalArgumentException("Title cannot be empty");
-        }
-        if (newTask.content.length() == 0) {
-            throw new IllegalArgumentException("Content cannot be empty");
-        }
-        if (newTask.dateTime == null) {
-            throw new IllegalArgumentException("Date must be selected");
-        }
-
+        taskValidator.validate(newTask);
         return taskRepository.create(newTask);
     }
 
@@ -37,15 +32,7 @@ public class TaskService {
     }
 
     public Task update(long id, Task existingTask) {
-        if (existingTask.title.length() == 0) {
-            throw new IllegalArgumentException("Title cannot be empty");
-        }
-        if (existingTask.content.length() == 0) {
-            throw new IllegalArgumentException("Content cannot be empty");
-        }
-        if (existingTask.dateTime == null) {
-            throw new IllegalArgumentException("Date must be selected");
-        }
+        taskValidator.validate(existingTask);
         return taskRepository.update(id, existingTask);
     }
 }

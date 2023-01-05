@@ -93,11 +93,12 @@ class TaskRepository {
     }
 
     public Task update(long id, Task existingTask) {
-        String sql = "UPDATE tasks SET title = :title, content = :content WHERE id = :id";
+        String sql = "UPDATE tasks SET title = :title, content = :content, date_time = :dateTime WHERE id = :id";
         HashMap<String, Object> parameters = new HashMap<>();
         parameters.put("id", id);
         parameters.put("title", existingTask.title);
         parameters.put("content", existingTask.content);
+        parameters.put("dateTime", existingTask.dateTime);
         jdbcTemplate.update(sql, parameters);
 
         return new Task(
@@ -114,5 +115,17 @@ class TaskRepository {
 
         String sortColumnName = orderByColumns.getOrDefault(sort, "id");
         return sortColumnName;
+    }
+
+    public void validate(Task newTask) {
+        if (newTask.title.length() == 0) {
+            throw new IllegalArgumentException("Title cannot be empty");
+        }
+        if (newTask.content.length() == 0) {
+            throw new IllegalArgumentException("Content cannot be empty");
+        }
+        if (newTask.dateTime == null) {
+            throw new IllegalArgumentException("Date must be selected");
+        }
     }
 }

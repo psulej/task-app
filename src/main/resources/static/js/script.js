@@ -38,7 +38,6 @@ function fetchTasks() {
 
         .then(res => res.json())
         .then(res => {
-            console.log(res);
 
             let tasks = res.items;
             let tableHtml = ''
@@ -71,19 +70,40 @@ function fetchTasks() {
         })
 }
 
+function toTimestamp(strDate){
+    var datum = Date.parse(strDate);
+    return datum/1000;
+}
+
 function taskRow(task) {
+
     const taskId = task.id
+    const dateTime = new Date(task.dateTime)
 
-    const dateTime = task.dateTime.toString()
-    const date = dateTime.slice(0,10)
-    const time = dateTime.slice(11,19)
+    const currentDateTimestamp = toTimestamp(new Date().toString());
+    const dateTimeTimeStamp = toTimestamp(task.dateTime.toString())
 
-    const tr = `<div class="card mb-3" id="task2-${taskId}" style="justify-content: center">
-              <div class="card-body mb-3" id="task-${taskId}">
+    const oneDay = 24 * 60 * 60
+    const numberOfDays = Math.round((dateTimeTimeStamp - currentDateTimestamp) / oneDay)
+
+    const redFrame =`<div class="card mb-3 border border-danger" id="task2-${taskId}" style="justify-content: center">`
+    const greenFrame =`<div class="card mb-3 border border-success" id="task2-${taskId}" style="justify-content: center">`
+    const yellowFrame =`<div class="card mb-3 border border-warning" id="task2-${taskId}" style="justify-content: center">`
+    const darkFrame =`<div class="card mb-3 border border-dark" id="task2-${taskId}" style="justify-content: center">`
+
+    var div = ''
+
+    if(numberOfDays >= 14) { div = greenFrame }
+    else if(numberOfDays >= 7) { div = yellowFrame }
+    else if(numberOfDays  >= 1) { div = redFrame }
+    else { div = darkFrame }
+
+    const tr = div+`<div class="card-body mb-3" id="task-${taskId}">
                     <h5 class="card-title">${task.title}</h5>
                     <p class="card-text">${task.content}</p>
-<!--                    22.05.2023 &nbsp; 15:17-->
-                    <div class="position-absolute top-0 start-2 mt-2 mb-2 h6"><p class="card-text">${date} &nbsp; ${time}</p></div>
+                    <div class="position-absolute top-0 start-2 mt-2 mb-2 h6" id="leftCornerDate">
+                    <p class="card-text">${dateTime.toLocaleString()}</p>
+                    </div>
                 <div class="d-grid gap-1 col-2 mx-auto">
                     <button type="button" onclick="openModal(${taskId})" class="btn btn-primary lg" data-bs-toggle="modal" data-bs-target="#exampleModal">Edit task</button>	
                 </div>
@@ -97,7 +117,7 @@ function taskRow(task) {
 function addTask() {
     const title = document.getElementById("title");
     const content = document.getElementById("content");
-    const time = document.getElementById("time");
+    const dateTime = document.getElementById("dateTime");
 
     if(title.value === "") {
         document.getElementById("titleAlert").hidden = false;
@@ -105,7 +125,7 @@ function addTask() {
     if(content.value === "") {
         document.getElementById("contentAlert").hidden = false;
     }
-    if(time.value === "") {
+    if(dateTime.value === "") {
         document.getElementById("timeAlert").hidden = false;
     }
 
@@ -115,7 +135,7 @@ function addTask() {
         body: JSON.stringify({
             title: title.value,
             content: content.value,
-            time: time.value
+            dateTime: dateTime.value
         })
     })
 
@@ -134,7 +154,6 @@ function addTask() {
                 let tableHtml = taskTableBodyElement.innerHTML + taskRow(task)
                 taskTableBodyElement.innerHTML = tableHtml
                 fetchTasks()
-
             }
         })
 }
@@ -157,17 +176,15 @@ function deleteTask(taskId) {
 function updateTask(taskId) {
     const editTitle = document.getElementById('editTitle').value
     const editContent = document.getElementById('editContent').value
-
-    console.log('edit title: ')
-    console.log(editTitle)
-
+    const editDate = document.getElementById('editTime').value
 
     fetch(`http://localhost:8080/tasks/${taskId}`, {
         method: 'PUT',
         headers: getHeaders(),
         body: JSON.stringify({
             title: editTitle,
-            content: editContent
+            content: editContent,
+            dateTime: editDate
         })
     })
         .then(response => {
@@ -182,8 +199,7 @@ function updateTask(taskId) {
         .then(task => {
             // wyswietlanie
             const row = document.getElementById(`task-${taskId}`)
-            row.querySelector('.title').innerHTML = task.title
-            row.querySelector('.content').innerHTML = task.content
+            row.innerHTML = taskRow(task)
         })
 }
 
@@ -195,15 +211,12 @@ function openModal(taskId) {
         .then(res => res.json())
         .then(res => {
 
-            console.log(res)
             const updateForm = document.getElementById("updateForm");
-
-            console.log('title')
-            console.log(res.title)
 
             //wyswietlanie value w formie
             updateForm.querySelector('#editTitle').value = res.title
             updateForm.querySelector('#editContent').value = res.content
+            updateForm.querySelector('#editTime').value = res.dateTime
             updateForm.style.display = "block"
 
             const submitButton = updateForm.querySelector('button[type="submit"]')
@@ -215,6 +228,3 @@ function openModal(taskId) {
             submitButton.replaceWith(newSubmitButton); // usuniecie starych event listenerów
         })
 }
-
-var myModal = document.getElementById('myModal')
-var myInput = document.getElementById('myInput')
