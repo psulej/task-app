@@ -29,6 +29,9 @@
                     <div class="alert alert-danger" role="alert" hidden id="registerLoginAlert">
                         Write correct login!
                     </div>
+                    <div class="alert alert-danger" role="alert" hidden id="existsLoginAlert">
+                        Login exists!
+                    </div>
                     <div class="mb-3"></div>
                     <input type="password" class="form-control" id="registerPassword" placeholder="password" pattern="[A-Za-z0-9]{5,14}"
                            value=""
@@ -41,6 +44,9 @@
                            aria-describedby="registerEmailAlert" pattern="^(.+)@(\S+)$">
                     <div class="alert alert-danger" role="alert" hidden id="registerEmailAlert">
                         Write correct email!
+                    </div>
+                    <div class="alert alert-danger" role="alert" hidden id="existsEmailAlert">
+                        Email exists!
                     </div>
                     <div class="mb-3"></div>
                     <button type="submit" id="add" style="width: 10rem;" onclick="registerUser()"

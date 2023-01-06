@@ -29,8 +29,33 @@ function registerUser() {
             email: email.value
         })
     })
+        .then(response => {
+            if (!response.ok) {
+                return response.text().then(text => {
+                    return Promise.reject(text)
+                })
+            } else {
+                return response.json();
+            }
+        })
+
         .then(() => {
             window.location.replace("http://localhost:8080/login?register");
+        })
+
+        .catch(errorText => {
+            console.log(errorText)
+            const errors = JSON.parse(errorText).errors
+            if (errors) {
+                if (errors.indexOf('EMAIL_EXISTS') !== -1) {
+                    console.log('Email exists, try different one :(')
+                    document.getElementById("existsEmailAlert").hidden = false;
+                }
+                if (errors.indexOf('LOGIN_EXISTS') !== -1) {
+                    console.log('Login exists, try different one :(')
+                    document.getElementById("existsLoginAlert").hidden = false;
+                }
+            }
         })
 }
 
@@ -87,7 +112,6 @@ function validateInputs(){
                 valid = false
             }
             if(validation.getValue() === null || validation.getValue().length === 0){
-                // document.getElementById('inputsError').style.visibility = "visible"
                 document.getElementById("inputsError").hidden = false;
             }
         }

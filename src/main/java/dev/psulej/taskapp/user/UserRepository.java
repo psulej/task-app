@@ -5,13 +5,11 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.List;
 
 @Repository
 public class UserRepository {
@@ -64,7 +62,7 @@ public class UserRepository {
                 .orElse(null);
     }
 
-    public boolean validateEmail(String email) {
+    public boolean emailExists(String email) {
 
         boolean emailExists = false;
 
@@ -84,7 +82,7 @@ public class UserRepository {
         return emailExists;
     }
 
-    public boolean validateLogin(String login) {
+    public boolean loginExists(String login) {
         boolean loginExists = false;
 
         String sql = "select exists(select 1 from users where login = :login)";

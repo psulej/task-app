@@ -1,6 +1,11 @@
 package dev.psulej.taskapp.user;
+import dev.psulej.taskapp.error.ValidationError;
+import dev.psulej.taskapp.error.ValidationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UserService {
@@ -14,15 +19,7 @@ public class UserService {
     }
 
     public void register(RegistrationRequest request) {
-
-        // sprawdzenie czy uzytkownik nie istnieje juz w bazie (dla loginu i emaila)
-        // przemapowianie requesta na encje (obiekt domenowy)
-        if (userRepository.validateEmail(request.email)) {
-            throw new IllegalArgumentException("Email already exists");
-        }
-        if (userRepository.validateLogin(request.login)) {
-            throw new IllegalArgumentException("Login already exists");
-        }
+        validate(request);
 
         String hashedPassword = passwordEncoder.encode(request.password);
 
@@ -34,5 +31,18 @@ public class UserService {
         );
 
         userRepository.create(newUser);
+    }
+
+    private void validate(RegistrationRequest request) {
+        List<ValidationError> errors = new ArrayList<>();
+
+        if (userRepository.emailExists(request.email)) {
+            errors.add(ValidationError.EMAIL_EXISTS);
+        }
+        if (userRepository.loginExists(request.login)) {
+            errors.add(ValidationError.LOGIN_EXISTS);
+        }
+
+        throw new ValidationException(errors);
     }
 }

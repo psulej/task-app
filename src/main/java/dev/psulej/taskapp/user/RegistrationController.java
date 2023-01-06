@@ -5,8 +5,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-@RequestMapping("/registration")
-@Controller
+@RestController
 public class RegistrationController {
 
     private final UserService userService;
@@ -15,15 +14,17 @@ public class RegistrationController {
         this.userService = userService;
     }
 
-    @GetMapping
-    public String registrationPage() {
-        return "register";
-    }
-
-    @PostMapping
-    @ResponseBody
+    @PostMapping("/registration")
     public void register(@Valid @RequestBody RegistrationRequest request) {
         userService.register(request);
     }
+}
 
+@Controller
+class RegistrationViewController {
+
+    @GetMapping("/registration")
+    public String registrationPage() {
+        return "register";
+    }
 }
