@@ -1,7 +1,3 @@
-
-var myModal = document.getElementById('myModal')
-var myInput = document.getElementById('myInput')
-
 function getHeaders() {
     const token = document.getElementsByName("_csrf")[0].getAttribute('content')
     const headerName = document.getElementsByName("_csrf_header")[0].getAttribute('content')
@@ -14,6 +10,7 @@ function getHeaders() {
 
 function registerUser() {
 
+    // validacja po stronie frontu
     if (!validateInputs()) {
         console.log('Form is invalid')
         return
@@ -22,16 +19,6 @@ function registerUser() {
     const login = document.getElementById("registerLogin");
     const password = document.getElementById("registerPassword");
     const email = document.getElementById("registerEmail");
-
-    // if(login.value === "") {
-    //     document.getElementById("registerLoginAlert").hidden = false;
-    // }
-    // if(password.value === "") {
-    //     document.getElementById("registerPasswordAlert").hidden = false;
-    // }
-    // if(email.value === "") {
-    //     document.getElementById("registerEmailAlert").hidden = false;
-    // }
 
     fetch(`http://localhost:8080/registration`, {
         method: 'POST',
@@ -43,7 +30,7 @@ function registerUser() {
         })
     })
         .then(() => {
-            window.location.replace("http://localhost:8080/login");
+            window.location.replace("http://localhost:8080/login?register");
         })
 }
 
@@ -70,19 +57,19 @@ function validateInputs(){
 
     const loginValidation = new Validation(
         document.getElementById("registerLogin").value,
-        /^[\w.-]{0,19}[0-9a-zA-Z]$/,
+        /[A-Za-z0-9]{3,14}/,
         document.getElementById('registerLoginAlert')
     )
 
     const emailValidation = new Validation(
         document.getElementById("registerEmail").value,
-        /^([a-zA-Z0-9])+([.a-zA-Z0-9_-])*@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-]+)+/,
+        /^(.+)@(\S+)$/,
         document.getElementById('registerEmailAlert')
     )
 
     const passwordValidation = new Validation(
         document.getElementById("registerPassword").value,
-        /^[\w.-]{0,19}[0-9a-zA-Z]$/,
+        /[A-Za-z0-9]{5,14}/,
         document.getElementById('registerPasswordAlert')
     )
 

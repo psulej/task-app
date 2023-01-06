@@ -1,27 +1,57 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:tiles="http://www.thymeleaf.org">
 <head>
-    <title tiles:fragment="title">Messages : Create</title>
+    <title tiles:fragment="title">TaskApp</title>
+    <title>TaskApp</title>
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
-<body>
-<div tiles:fragment="content">
-    <form name="f" th:action="@{/login}" method="post">
-        <fieldset>
-            <legend>Please Login</legend>
-            <div th:if="${param.error}" class="alert alert-error">
-                Invalid username and password.
+
+<body class="d-flex flex-column min-vh-100">
+<header class="py-5 d-flex">
+    <div class="container px-lg-6">
+        <div class="p-3 p-lg-5 bg-light rounded-3 text-center">
+            <div class="m-4 m-lg-4 d-flex">
+                <div class="col"></div>
+                <div tiles:fragment="content" class="col-xs-3">
+                    <form name="f" th:action="@{/login}" method="post">
+                        <fieldset>
+                            <legend class="display-6 fw-bold mb-3 text-center h2">Login</legend>
+                            <div th:if="${param.logout}" class="alert alert-success">
+                                You have been logged out.
+                            </div>
+                            <div th:if="${param.error}" class="alert alert-danger">
+                                Invalid login!
+                            </div>
+                            <div th:if="${param.register}" class="alert alert-success">
+                                You can now log in
+                            </div>
+                            <div class="mb-3">
+                                <input type="text" class="form-control" id="username" name="username"
+                                       placeholder="login"/>
+                            </div>
+                            <div class="mb-3">
+                                <input type="password" class="form-control" id="password" name="password"
+                                       placeholder="password"/>
+                            </div>
+                            <div class="form-actions mb-3">
+                                <button type="submit" id="add" style="width: 10rem;" onclick=""
+                                        class="btn btn-primary btn-lg btn btn-dark gap-2">Sign in
+                                </button>
+                            </div>
+
+                            <div class="mt-3"><p><a href="" th:href="@{/registration}">Move to registration page</a></p></div>
+                        </fieldset>
+                    </form>
+                </div>
+                <div class="col"></div>
             </div>
-            <div th:if="${param.logout}" class="alert alert-success">
-                You have been logged out.
-            </div>
-            <label for="username">Username</label>
-            <input type="text" id="username" name="username"/>
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password"/>
-            <div class="form-actions">
-                <button type="submit" class="btn">Log in</button>
-            </div>
-        </fieldset>
-    </form>
-</div>
+        </div>
+    </div>
+</header>
 </body>
 </html>

@@ -3,6 +3,8 @@ package dev.psulej.taskapp.user;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RequestMapping("/registration")
 @Controller
 public class RegistrationController {
@@ -20,7 +22,8 @@ public class RegistrationController {
 
     @PostMapping
     @ResponseBody
-    public void register(@RequestBody RegistrationRequest request) {
+    public void register(@Valid @RequestBody RegistrationRequest request) {
         userService.register(request);
     }
+
 }

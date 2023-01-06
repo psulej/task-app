@@ -14,6 +14,7 @@ public class UserService {
     }
 
     public void register(RegistrationRequest request) {
+
         // sprawdzenie czy uzytkownik nie istnieje juz w bazie (dla loginu i emaila)
         // przemapowianie requesta na encje (obiekt domenowy)
         if (userRepository.validateEmail(request.email)) {
