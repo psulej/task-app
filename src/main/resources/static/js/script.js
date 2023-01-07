@@ -161,6 +161,10 @@ function addTask() {
                 fetchTasks()
             }
         })
+        .catch(task => {
+            console.log("Form is incorrect")
+
+    })
 }
 
 function deleteTask(taskId) {

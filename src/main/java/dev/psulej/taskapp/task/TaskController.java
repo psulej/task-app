@@ -27,7 +27,7 @@ public class TaskController {
     }
 
     @PostMapping
-    public Task createTask(@RequestBody Task newTask) {
+    public Task createTask(@RequestBody TaskRequest  newTask) {
         return taskService.create(newTask);
     }
 
@@ -37,7 +37,7 @@ public class TaskController {
     }
 
     @PutMapping("/{id}")
-    public Task updateTask(@PathVariable long id, @RequestBody Task existingTask) {
+    public Task updateTask(@PathVariable long id, @RequestBody TaskRequest  existingTask) {
         return taskService.update(id, existingTask);
     }
 

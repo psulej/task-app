@@ -65,7 +65,7 @@ class TaskRepository {
         return task;
     }
 
-    public Task create(Task newTask) {
+    public Task create(TaskRequest  newTask) {
         String sql = """
                 INSERT INTO tasks(id, title, content, date_time) 
                 VALUES (nextval('tasks_seq'), :title, :content, :dateTime)
@@ -92,7 +92,7 @@ class TaskRepository {
         jdbcTemplate.update(sql, parameters);
     }
 
-    public Task update(long id, Task existingTask) {
+    public Task update(long id, TaskRequest  existingTask) {
         String sql = "UPDATE tasks SET title = :title, content = :content, date_time = :dateTime WHERE id = :id";
         HashMap<String, Object> parameters = new HashMap<>();
         parameters.put("id", id);

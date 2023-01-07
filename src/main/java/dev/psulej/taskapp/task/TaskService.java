@@ -23,7 +23,7 @@ public class TaskService {
         return taskRepository.get(id);
     }
 
-    public Task create(Task newTask) {
+    public Task create(TaskRequest  newTask) {
         taskValidator.validate(newTask);
         return taskRepository.create(newTask);
     }
@@ -32,7 +32,7 @@ public class TaskService {
         taskRepository.delete(id);
     }
 
-    public Task update(long id, Task existingTask) {
+    public Task update(long id, TaskRequest  existingTask) {
         taskValidator.validate(existingTask);
         return taskRepository.update(id, existingTask);
     }

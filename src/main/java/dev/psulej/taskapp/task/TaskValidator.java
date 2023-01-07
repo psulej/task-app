@@ -8,7 +8,7 @@ public class TaskValidator {
     public TaskValidator() {
     }
 
-    public void validate(Task newTask) {
+    public void validate(TaskRequest  newTask) {
         if (newTask.title.length() == 0) {
             throw new IllegalArgumentException("Title cannot be empty");
         }
