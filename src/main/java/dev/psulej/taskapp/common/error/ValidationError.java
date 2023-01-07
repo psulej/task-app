@@ -1,4 +1,4 @@
-package dev.psulej.taskapp.error;
+package dev.psulej.taskapp.common.error;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

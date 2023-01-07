@@ -105,7 +105,7 @@ function taskRow(task) {
                     <p class="card-text">${dateTime.toLocaleString()}</p>
                     </div>
                 <div class="d-grid gap-1 col-2 mx-auto">
-                    <button type="button" onclick="openModal(${taskId})" class="btn btn-primary lg" data-bs-toggle="modal" data-bs-target="#exampleModal">Edit task</button>	
+                    <button type="button" onclick="openModal(${taskId})" class="btn btn-primary lg" data-bs-toggle="modal" data-bs-target="#editTaskModal">Edit task</button>	
                 </div>
                 <button onclick="deleteTask(${taskId})" class="bi bi-trash position-absolute top-0 end-0 btn btn-primary btn-lg btn btn-danger">\u2718</button>
               </div>
@@ -119,6 +119,10 @@ function addTask() {
     const content = document.getElementById("content");
     const dateTime = document.getElementById("dateTime");
 
+    document.getElementById("titleAlert").hidden = true;
+    document.getElementById("contentAlert").hidden = true;
+    document.getElementById("timeAlert").hidden = true;
+
     if(title.value === "") {
         document.getElementById("titleAlert").hidden = false;
     }
@@ -128,6 +132,7 @@ function addTask() {
     if(dateTime.value === "") {
         document.getElementById("timeAlert").hidden = false;
     }
+
 
     fetch(`http://localhost:8080/tasks`, {
         method: 'POST',
@@ -178,6 +183,17 @@ function updateTask(taskId) {
     const editContent = document.getElementById('editContent').value
     const editDate = document.getElementById('editTime').value
 
+    // document.getElementById("editTitleAlert").hidden = true;
+    // document.getElementById("editContentAlert").hidden = true;
+    //
+    // if(editTitle.value === "") {
+    //     document.getElementById("editTitleAlert").hidden = false;
+    // }
+    // if(editContent.value === "") {
+    //     document.getElementById("editContentAlert").hidden = false;
+    // }
+
+
     fetch(`http://localhost:8080/tasks/${taskId}`, {
         method: 'PUT',
         headers: getHeaders(),
@@ -200,7 +216,14 @@ function updateTask(taskId) {
             // wyswietlanie
             const row = document.getElementById(`task-${taskId}`)
             row.innerHTML = taskRow(task)
+            closeModal()
+            fetchTasks()
         })
+}
+
+function closeModal() {
+    const closeButton = document.querySelector("#editTaskModal .close")
+    closeButton.click()
 }
 
 function openModal(taskId) {

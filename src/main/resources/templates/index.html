@@ -14,20 +14,11 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
     <div class="container px-lg-5">
         <a class="navbar-brand fs-4 h4" href="">TaskApp</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span
-                class="navbar-toggler-icon"></span></button>
-
         <form name="logoutForm" th:action="@{/logout}" method="post">
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-<!--                    <a class="nav-link" href="" th:href="@{/logout}">Logout</a>-->
-                    <a class="nav-link" onclick="document.logoutForm.submit();">Logout</a>
 
-                </li>
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <button class="btn btn-dark" onclick="document.logoutForm.submit();">Logout</button>
             </ul>
-        </div>
         </form>
     </div>
 </nav>
@@ -85,25 +76,31 @@
                         class="btn btn-primary btn-lg btn btn-dark gap-2">Add
                 </button>
                 <!-- Modal -->
-                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                <div class="modal fade" id="editTaskModal" tabindex="-1" aria-labelledby="editModalLabel"
                      aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
-                            <form id="updateForm" class="form">
+                            <div id="updateForm" class="form">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Edit task</h5>
+                                    <h5 class="modal-title" id="editTaskModalLabel">Edit task</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                             aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
                                     <input type="text" class="form-control" id="editTitle" placeholder="edit title"
                                            aria-describedby="editTitle">
-
+<!--                                    <div class="alert alert-danger" role="alert" hidden id="editTitleAlert">-->
+<!--                                        Title cannot be empty!-->
+<!--                                    </div>-->
                                     <div class="mb-3">
                                         <label for="editContent" class="form-label"></label>
                                         <textarea class="form-control" placeholder="edit content" id="editContent"
                                                   rows="4" maxlength="1500"></textarea>
+<!--                                        <div class="alert alert-danger" role="alert" hidden id="editContentAlert">-->
+<!--                                            Content cannot be empty!-->
+<!--                                        </div>-->
                                     </div>
+
                                     <div class="cs-form mb-3">
                                         <input type="datetime-local" id="editTime"
                                                name="datetime-time"
@@ -112,11 +109,11 @@
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
+                                    <button type="button" class="btn btn-secondary close" data-bs-dismiss="modal">Close
                                     </button>
                                     <button type="submit" id="saveUpdate" class="btn btn-primary">Save changes</button>
                                 </div>
-                            </form>
+                            </div>
                         </div>
                     </div>
                 </div>

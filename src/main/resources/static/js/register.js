@@ -35,12 +35,8 @@ function registerUser() {
                     return Promise.reject(text)
                 })
             } else {
-                return response.json();
+                window.location.replace("http://localhost:8080/login?register");
             }
-        })
-
-        .then(() => {
-            window.location.replace("http://localhost:8080/login?register");
         })
 
         .catch(errorText => {

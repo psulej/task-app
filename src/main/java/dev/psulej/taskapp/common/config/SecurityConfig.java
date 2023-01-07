@@ -1,4 +1,4 @@
-package dev.psulej.taskapp;
+package dev.psulej.taskapp.common.config;
 
 import dev.psulej.taskapp.user.SecurityUserDetailsService;
 import dev.psulej.taskapp.user.UserRepository;

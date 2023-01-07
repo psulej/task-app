@@ -1,4 +1,4 @@
-package dev.psulej.taskapp;
+package dev.psulej.taskapp.common.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -26,7 +26,7 @@ class TaskRepository {
     }
 
 
-    public PaginationResponse<Task> getPage(int page, int size, String sort) {
+    public PaginationResponse<Task> getPage(long userId, int page, int size, String sort) {
         String sql = "SELECT id, title, content,date_time FROM tasks WHERE 1 = 1";
         String countSql = "SELECT count(*) FROM tasks WHERE 1 = 1";
 
@@ -117,15 +117,4 @@ class TaskRepository {
         return sortColumnName;
     }
 
-    public void validate(Task newTask) {
-        if (newTask.title.length() == 0) {
-            throw new IllegalArgumentException("Title cannot be empty");
-        }
-        if (newTask.content.length() == 0) {
-            throw new IllegalArgumentException("Content cannot be empty");
-        }
-        if (newTask.dateTime == null) {
-            throw new IllegalArgumentException("Date must be selected");
-        }
-    }
 }

@@ -1,4 +1,4 @@
-package dev.psulej.taskapp;
+package dev.psulej.taskapp.common.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;

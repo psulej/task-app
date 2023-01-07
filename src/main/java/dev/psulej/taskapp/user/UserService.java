@@ -1,6 +1,6 @@
 package dev.psulej.taskapp.user;
-import dev.psulej.taskapp.error.ValidationError;
-import dev.psulej.taskapp.error.ValidationException;
+import dev.psulej.taskapp.common.error.ValidationError;
+import dev.psulej.taskapp.common.error.ValidationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +16,11 @@ public class UserService {
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+    }
+
+    public Long getLoggedUserId() {
+        // TODO: get from security context
+        return 1L;
     }
 
     public void register(RegistrationRequest request) {
@@ -42,7 +47,8 @@ public class UserService {
         if (userRepository.loginExists(request.login)) {
             errors.add(ValidationError.LOGIN_EXISTS);
         }
-
-        throw new ValidationException(errors);
+        if (!errors.isEmpty()) {
+            throw new ValidationException(errors);
+        }
     }
 }

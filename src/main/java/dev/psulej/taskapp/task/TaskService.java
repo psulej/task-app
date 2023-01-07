@@ -15,7 +15,8 @@ public class TaskService {
     }
 
     public PaginationResponse<Task> getPage(int page, int size, String sort) {
-        return taskRepository.getPage(page, size, sort);
+        long userId = -1;
+        return taskRepository.getPage(userId,page, size, sort);
     }
 
     public Task get(long id) {
