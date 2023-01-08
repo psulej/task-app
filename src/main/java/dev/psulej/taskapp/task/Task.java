@@ -3,7 +3,7 @@ package dev.psulej.taskapp.task;
 import java.time.LocalDateTime;
 
 public class Task {
-    Long id;
+    long id;
     String title;
     String content;
     LocalDateTime dateTime;
@@ -15,7 +15,7 @@ public class Task {
         this.dateTime = time;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 

@@ -1,21 +1,11 @@
-function getHeaders() {
-    const token = document.getElementsByName("_csrf")[0].getAttribute('content')
-    const headerName = document.getElementsByName("_csrf_header")[0].getAttribute('content')
-    const headers = {
-        'Content-Type': 'application/json'
-    }
-    headers[headerName] = token
-    return headers
-}
-
 function registerUser() {
 
     // validacja po stronie
 
-    // if (!validateInputs()) {
-    //     console.log('Form is invalid')
-    //     return
-    // }
+    if (!validateInputs()) {
+        console.log('Form is invalid')
+        return
+    }
 
     const login = document.getElementById("registerLogin");
     const password = document.getElementById("registerPassword");
@@ -41,7 +31,6 @@ function registerUser() {
         })
 
         .catch(errorText => {
-            console.log(errorText)
             const errors = JSON.parse(errorText).errors
             if (errors) {
                 if (errors.indexOf('EMAIL_EXISTS') !== -1) {

@@ -7,13 +7,11 @@ import org.springframework.stereotype.Service;
 public class TaskService {
 
     private final UserService userService;
-    private final TaskValidator taskValidator;
     private final TaskRepository taskRepository;
 
 
-    public TaskService(UserService userService, TaskValidator taskValidator, TaskRepository taskRepository) {
+    public TaskService(UserService userService, TaskRepository taskRepository) {
         this.userService = userService;
-        this.taskValidator = taskValidator;
         this.taskRepository = taskRepository;
     }
 
@@ -27,7 +25,6 @@ public class TaskService {
     }
 
     public Task create(TaskRequest newTask) {
-        taskValidator.validate(newTask);
         long userId = userService.getLoggedUserId();
         return taskRepository.create(userId,newTask);
     }
@@ -37,7 +34,6 @@ public class TaskService {
     }
 
     public Task update(long id, TaskRequest  existingTask) {
-        taskValidator.validate(existingTask);
         long userId = userService.getLoggedUserId();
         return taskRepository.update(id, userId, existingTask);
     }

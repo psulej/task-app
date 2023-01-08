@@ -19,11 +19,11 @@ public class UserService {
     }
 
     public Long getLoggedUserId() {
-        ApplicationUser applicationUser = getLoggedUser();
-        return applicationUser.getId();
+        LoggedInUser loggedInUser = getLoggedUser();
+        return loggedInUser.getId();
     }
 
-    private ApplicationUser getLoggedUser() {
+    public LoggedInUser getLoggedUser() {
         SecurityContext context = SecurityContextHolder.getContext();
         Authentication authentication = context.getAuthentication();
         if (authentication == null) {
@@ -35,7 +35,8 @@ public class UserService {
             throw new IllegalStateException("Principal is not of type ApplicationUser");
         }
 
-        return (ApplicationUser) principal;
+        ApplicationUser applicationUser = (ApplicationUser) principal;
+        return new LoggedInUser(applicationUser.getId(),applicationUser.getLogin(),applicationUser.getEmail());
     }
 
     public void register(RegistrationRequest request) {

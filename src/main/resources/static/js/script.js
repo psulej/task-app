@@ -13,16 +13,6 @@ function loadPreviousPage() {
     fetchTasks()
 }
 
-function getHeaders() {
-    const token = document.getElementsByName("_csrf")[0].getAttribute('content')
-    const headerName = document.getElementsByName("_csrf_header")[0].getAttribute('content')
-    const headers = {
-        'Content-Type': 'application/json'
-    }
-    headers[headerName] = token
-    return headers
-}
-
 function fetchTasks() {
     let url = `http://localhost:8080/tasks?page=${page}&size=${size}`
 
@@ -31,6 +21,7 @@ function fetchTasks() {
         headers: getHeaders(),
     })
 
+        .then(handleResponse)
         .then(res => res.json())
         .then(res => {
 
@@ -141,16 +132,8 @@ function addTask() {
             dateTime: dateTime.value
         })
     })
-
-        .then(task => {
-            if (!task.ok) {
-                return task.text().then(text => {
-                    return Promise.reject(text)
-                })
-            } else {
-                return task.json();
-            }
-        })
+        .then(handleResponse)
+        .then(response => response.json())
         .then(task => {
             if ((task.title.length > 0) && (task.content.length > 0)) {
                 let taskTableBodyElement = document.getElementById('tasksDiv')
@@ -171,6 +154,7 @@ function deleteTask(taskId) {
         method: 'DELETE',
         headers: getHeaders()
     })
+        .then(handleResponse)
         .then(() => {
             let row = document.getElementById(`task-${taskId}`)
             row.remove();
@@ -180,21 +164,43 @@ function deleteTask(taskId) {
         })
 }
 
+function handleResponse(response) {
+    // expired http session
+    if (response.redirected || response.type === 'opaqueredirect') {
+        window.location.replace("http://localhost:8080/login");
+    }
+    if (!response.ok) {
+        return response.text().then(text => {
+            return Promise.reject(text)
+        })
+    }
+
+    return response
+}
+
 function updateTask(taskId) {
     const editTitle = document.getElementById('editTitle').value
     const editContent = document.getElementById('editContent').value
     const editDate = document.getElementById('editTime').value
 
-    // document.getElementById("editTitleAlert").hidden = true;
-    // document.getElementById("editContentAlert").hidden = true;
-    //
-    // if(editTitle.value === "") {
-    //     document.getElementById("editTitleAlert").hidden = false;
-    // }
-    // if(editContent.value === "") {
-    //     document.getElementById("editContentAlert").hidden = false;
-    // }
+    document.getElementById("editTitleAlert").hidden = true;
+    document.getElementById("editContentAlert").hidden = true;
+    document.getElementById("editDateAlert").hidden = true;
 
+    if(editTitle === "") {
+        document.getElementById("editTitleAlert").hidden = false;
+    }
+    if(editContent === "") {
+        document.getElementById("editContentAlert").hidden = false;
+    }
+    if(editDate === "") {
+        document.getElementById("editDateAlert").hidden = false;
+    }
+
+    if(editTitle === "" || editContent === "" || editDate === ""){
+        console.log("Empty input!")
+        return
+    }
 
     fetch(`http://localhost:8080/tasks/${taskId}`, {
         method: 'PUT', redirect: 'manual',
@@ -205,27 +211,14 @@ function updateTask(taskId) {
             dateTime: editDate
         })
     })
-        .then(response => {
-            if (response.type === 'opaqueredirect') {
-                window.location.replace("http://localhost:8080/login");
-            }
-            if (!response.ok) {
-                return response.text().then(text => {
-                    return Promise.reject(text)
-                })
-            } else {
-                return response.json();
-            }
-        })
+        .then(handleResponse)
+        .then(response => response.json())
         .then(task => {
             // wyswietlanie
             const row = document.getElementById(`task-${taskId}`)
             row.innerHTML = taskRow(task)
             closeModal()
             fetchTasks()
-        })
-        .catch(error => {
-            console.log('errorcustom', error)
         })
 }
 
@@ -239,6 +232,7 @@ function openModal(taskId) {
         method: 'GET',
         headers: getHeaders()
     })
+        .then(handleResponse)
         .then(res => res.json())
         .then(res => {
 
