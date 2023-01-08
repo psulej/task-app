@@ -13,11 +13,6 @@ function loadPreviousPage() {
     fetchTasks()
 }
 
-function loadPage(number) {
-    page = number
-    fetchTasks()
-}
-
 function getHeaders() {
     const token = document.getElementsByName("_csrf")[0].getAttribute('content')
     const headerName = document.getElementsByName("_csrf_header")[0].getAttribute('content')
@@ -133,6 +128,9 @@ function addTask() {
         document.getElementById("timeAlert").hidden = false;
     }
 
+    if(title.value === "" || content.value ==="" || dateTime.value === ""){
+        return console.log("Empty input!")
+    }
 
     fetch(`http://localhost:8080/tasks`, {
         method: 'POST',
@@ -162,6 +160,7 @@ function addTask() {
             }
             else {
                 console.log('Form is invalid')
+                return
             }
         })
 }
@@ -198,7 +197,7 @@ function updateTask(taskId) {
 
 
     fetch(`http://localhost:8080/tasks/${taskId}`, {
-        method: 'PUT',
+        method: 'PUT', redirect: 'manual',
         headers: getHeaders(),
         body: JSON.stringify({
             title: editTitle,
@@ -207,6 +206,9 @@ function updateTask(taskId) {
         })
     })
         .then(response => {
+            if (response.type === 'opaqueredirect') {
+                window.location.replace("http://localhost:8080/login");
+            }
             if (!response.ok) {
                 return response.text().then(text => {
                     return Promise.reject(text)
@@ -221,6 +223,9 @@ function updateTask(taskId) {
             row.innerHTML = taskRow(task)
             closeModal()
             fetchTasks()
+        })
+        .catch(error => {
+            console.log('errorcustom', error)
         })
 }
 

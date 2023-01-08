@@ -1,25 +1,21 @@
 package dev.psulej.taskapp.user;
-import dev.psulej.taskapp.common.error.ValidationError;
-import dev.psulej.taskapp.common.error.ValidationException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
     public final PasswordEncoder passwordEncoder;
+    private final UserValidator userValidator;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserValidator userValidator) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.userValidator = userValidator;
     }
 
     public Long getLoggedUserId() {
@@ -43,7 +39,7 @@ public class UserService {
     }
 
     public void register(RegistrationRequest request) {
-        validate(request);
+        userValidator.validate(request);
 
         String hashedPassword = passwordEncoder.encode(request.password);
 
@@ -57,17 +53,4 @@ public class UserService {
         userRepository.create(newUser);
     }
 
-    private void validate(RegistrationRequest request) {
-        List<ValidationError> errors = new ArrayList<>();
-
-        if (userRepository.emailExists(request.email)) {
-            errors.add(ValidationError.EMAIL_EXISTS);
-        }
-        if (userRepository.loginExists(request.login)) {
-            errors.add(ValidationError.LOGIN_EXISTS);
-        }
-        if (!errors.isEmpty()) {
-            throw new ValidationException(errors);
-        }
-    }
 }

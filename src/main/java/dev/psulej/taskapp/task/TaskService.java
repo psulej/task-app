@@ -28,7 +28,7 @@ public class TaskService {
 
     public Task create(TaskRequest newTask) {
         taskValidator.validate(newTask);
-        long userId = userService.getLoggedUserId();;
+        long userId = userService.getLoggedUserId();
         return taskRepository.create(userId,newTask);
     }
 
@@ -38,7 +38,7 @@ public class TaskService {
 
     public Task update(long id, TaskRequest  existingTask) {
         taskValidator.validate(existingTask);
-        long userId = userService.getLoggedUserId();;
-        return taskRepository.update(userId,id,existingTask);
+        long userId = userService.getLoggedUserId();
+        return taskRepository.update(id, userId, existingTask);
     }
 }

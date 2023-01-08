@@ -10,11 +10,12 @@ function getHeaders() {
 
 function registerUser() {
 
-    // validacja po stronie frontu
-    if (!validateInputs()) {
-        console.log('Form is invalid')
-        return
-    }
+    // validacja po stronie
+
+    // if (!validateInputs()) {
+    //     console.log('Form is invalid')
+    //     return
+    // }
 
     const login = document.getElementById("registerLogin");
     const password = document.getElementById("registerPassword");
