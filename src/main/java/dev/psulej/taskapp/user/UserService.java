@@ -1,6 +1,10 @@
 package dev.psulej.taskapp.user;
 import dev.psulej.taskapp.common.error.ValidationError;
 import dev.psulej.taskapp.common.error.ValidationException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,8 +23,23 @@ public class UserService {
     }
 
     public Long getLoggedUserId() {
-        // TODO: get from security context
-        return 1L;
+        ApplicationUser applicationUser = getLoggedUser();
+        return applicationUser.getId();
+    }
+
+    private ApplicationUser getLoggedUser() {
+        SecurityContext context = SecurityContextHolder.getContext();
+        Authentication authentication = context.getAuthentication();
+        if (authentication == null) {
+            throw new IllegalStateException("User is not logged in");
+        }
+
+        Object principal = authentication.getPrincipal();
+        if (!(principal instanceof ApplicationUser)) {
+            throw new IllegalStateException("Principal is not of type ApplicationUser");
+        }
+
+        return (ApplicationUser) principal;
     }
 
     public void register(RegistrationRequest request) {

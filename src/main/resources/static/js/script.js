@@ -160,11 +160,10 @@ function addTask() {
                 taskTableBodyElement.innerHTML = tableHtml
                 fetchTasks()
             }
+            else {
+                console.log('Form is invalid')
+            }
         })
-        .catch(task => {
-            console.log("Form is incorrect")
-
-    })
 }
 
 function deleteTask(taskId) {

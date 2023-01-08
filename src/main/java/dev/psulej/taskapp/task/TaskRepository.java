@@ -27,10 +27,13 @@ class TaskRepository {
 
 
     public PaginationResponse<Task> getPage(long userId, int page, int size, String sort) {
-        String sql = "SELECT id, title, content,date_time FROM tasks WHERE 1 = 1";
-        String countSql = "SELECT count(*) FROM tasks WHERE 1 = 1";
+
+        String sql = "SELECT id, title, content, date_time, user_id FROM tasks WHERE user_id = :userId";
+        String countSql = "SELECT count(*) FROM tasks WHERE user_id = :userId";
 
         Map<String, Object> parameters = new HashMap<>();
+
+        parameters.put("userId",userId);
 
         String sortColumnName = getOrderByParameter(sort);
         sql += " ORDER BY " + sortColumnName;
@@ -65,10 +68,10 @@ class TaskRepository {
         return task;
     }
 
-    public Task create(TaskRequest  newTask) {
+    public Task create(long userId, TaskRequest  newTask) {
         String sql = """
-                INSERT INTO tasks(id, title, content, date_time) 
-                VALUES (nextval('tasks_seq'), :title, :content, :dateTime)
+                INSERT INTO tasks(id, title, content, date_time, user_id) 
+                VALUES (nextval('tasks_seq'), :title, :content, :dateTime, :userId)
                 """;
 
         HashMap<String, Object> parameters = new HashMap<>();
@@ -76,6 +79,7 @@ class TaskRepository {
         parameters.put("title", newTask.title);
         parameters.put("content", newTask.content);
         parameters.put("dateTime", newTask.dateTime);
+        parameters.put("userId", userId);
 
         KeyHolder key = new GeneratedKeyHolder(); // zwraca id dla taska
         jdbcTemplate.update(sql, new MapSqlParameterSource(parameters), key, new String[]{"id"});
@@ -92,13 +96,14 @@ class TaskRepository {
         jdbcTemplate.update(sql, parameters);
     }
 
-    public Task update(long id, TaskRequest  existingTask) {
-        String sql = "UPDATE tasks SET title = :title, content = :content, date_time = :dateTime WHERE id = :id";
+    public Task update(long id, long userId, TaskRequest  existingTask) {
+        String sql = "UPDATE tasks SET title = :title, content = :content, date_time = :dateTime WHERE id = :id AND user_id = :userId";
         HashMap<String, Object> parameters = new HashMap<>();
         parameters.put("id", id);
         parameters.put("title", existingTask.title);
         parameters.put("content", existingTask.content);
         parameters.put("dateTime", existingTask.dateTime);
+        parameters.put("userId", userId);
         jdbcTemplate.update(sql, parameters);
 
         return new Task(

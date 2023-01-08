@@ -17,14 +17,39 @@ public class SecurityUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByLogin(username);
-        return new org.springframework.security.core.userdetails.User(
-                user.getLogin(),
-                user.getPassword(),
+        return new ApplicationUser(user.id, user.login, user.email, user.password);
+    }
+}
+
+class ApplicationUser extends org.springframework.security.core.userdetails.User {
+
+    private final long id;
+    private final String email;
+
+    ApplicationUser(long id, String login, String email, String password) {
+        super(
+                login,
+                password,
                 true,
                 true,
                 true,
                 true,
                 Set.of()
         );
+        this.id = id;
+        this.email = email;
     }
+
+    public long getId() {
+        return id;
+    }
+
+    public String getLogin() {
+        return getUsername();
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
 }
