@@ -15,9 +15,11 @@ import java.util.HashMap;
 public class UserRepository {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
+    private final UserRowMapper userRowMapper;
 
-    public UserRepository(NamedParameterJdbcTemplate jdbcTemplate) {
+    public UserRepository(NamedParameterJdbcTemplate jdbcTemplate, UserRowMapper userRowMapper) {
         this.jdbcTemplate = jdbcTemplate;
+        this.userRowMapper = userRowMapper;
     }
 
     public User create(User newUser) {
@@ -44,19 +46,7 @@ public class UserRepository {
         HashMap<String, Object> parameters = new HashMap<>();
         parameters.put("login", username);
 
-        RowMapper<User> rowMapper = new RowMapper<>() {
-            @Override
-            public User mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return new User(
-                        rs.getLong("id"),
-                        rs.getString("login"),
-                        rs.getString("password"),
-                        rs.getString("email")
-                );
-            }
-        };
-
-        return jdbcTemplate.query(sql, parameters, rowMapper)
+        return jdbcTemplate.query(sql, parameters, userRowMapper)
                 .stream()
                 .findFirst()
                 .orElse(null);
@@ -73,12 +63,11 @@ public class UserRepository {
         RowMapper<Boolean> rowMapper = new RowMapper<>() {
             @Override
             public Boolean mapRow(ResultSet rs, int rowNum) throws SQLException {
-                boolean isEmailExisting = rs.getBoolean(1);
-                return isEmailExisting;
+                return rs.getBoolean(1);
             }
         };
 
-        emailExists = jdbcTemplate.queryForObject(sql, parameters, rowMapper);
+        emailExists = Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, parameters, rowMapper));
         return emailExists;
     }
 
@@ -92,12 +81,11 @@ public class UserRepository {
         RowMapper<Boolean> rowMapper = new RowMapper<>() {
             @Override
             public Boolean mapRow(ResultSet rs, int rowNum) throws SQLException {
-                boolean isLoginExisting = rs.getBoolean(1);
-                return isLoginExisting;
+                return rs.getBoolean(1);
             }
         };
 
-        loginExists = jdbcTemplate.queryForObject(sql, parameters, rowMapper);
+        loginExists = Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, parameters, rowMapper));
         return loginExists;
     }
 }

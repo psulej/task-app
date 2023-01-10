@@ -9,7 +9,6 @@ public class TaskService {
     private final UserService userService;
     private final TaskRepository taskRepository;
 
-
     public TaskService(UserService userService, TaskRepository taskRepository) {
         this.userService = userService;
         this.taskRepository = taskRepository;

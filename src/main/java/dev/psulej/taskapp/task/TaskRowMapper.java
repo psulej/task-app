@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 
 @Component
 public class TaskRowMapper implements RowMapper<Task> {
+
     @Override
     public Task mapRow(ResultSet rs, int rowNum) throws SQLException {
         long id = rs.getLong("id");

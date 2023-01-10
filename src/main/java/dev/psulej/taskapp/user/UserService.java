@@ -23,6 +23,7 @@ public class UserService {
         return loggedInUser.getId();
     }
 
+    @SuppressWarnings("PatternVariableCanBeUsed")
     public LoggedInUser getLoggedUser() {
         SecurityContext context = SecurityContextHolder.getContext();
         Authentication authentication = context.getAuthentication();

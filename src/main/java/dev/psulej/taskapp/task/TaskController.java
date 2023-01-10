@@ -2,6 +2,8 @@ package dev.psulej.taskapp.task;
 
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/tasks")
 public class TaskController {
@@ -27,7 +29,7 @@ public class TaskController {
     }
 
     @PostMapping
-    public Task createTask(@RequestBody TaskRequest newTask) {
+    public Task createTask(@Valid @RequestBody TaskRequest newTask) {
         return taskService.create(newTask);
     }
 
@@ -37,7 +39,7 @@ public class TaskController {
     }
 
     @PutMapping("/{id}")
-    public Task updateTask(@PathVariable long id, @RequestBody TaskRequest  existingTask) {
+    public Task updateTask(@PathVariable long id, @Valid @RequestBody TaskRequest  existingTask) {
         return taskService.update(id, existingTask);
     }
 

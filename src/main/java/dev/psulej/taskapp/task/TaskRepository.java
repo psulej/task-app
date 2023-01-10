@@ -17,7 +17,6 @@ import java.util.Map;
 class TaskRepository {
 
     private final TaskRowMapper taskRowMapper;
-
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
     public TaskRepository(TaskRowMapper taskRowMapper, NamedParameterJdbcTemplate jdbcTemplate) {
@@ -32,7 +31,6 @@ class TaskRepository {
         String countSql = "SELECT count(*) FROM tasks WHERE user_id = :userId";
 
         Map<String, Object> parameters = new HashMap<>();
-
         parameters.put("userId",userId);
 
         String sortColumnName = getOrderByParameter(sort);
@@ -51,9 +49,7 @@ class TaskRepository {
 
         Long totalItems = jdbcTemplate.queryForObject(countSql, parameters, countRowMapper);
         long totalPages = (long) (Math.ceil(totalItems / (size * 1.0)));
-
         int currentPage = page;
-
         PaginationResponse<Task> response = new PaginationResponse<>(totalItems, totalPages, currentPage, tasks);
         return response;
     }
@@ -117,7 +113,6 @@ class TaskRepository {
     private static String getOrderByParameter(String sort) {
         Map<String, String> orderByColumns = new HashMap<>();
         orderByColumns.put("id", "id");
-
         String sortColumnName = orderByColumns.getOrDefault(sort, "id");
         return sortColumnName;
     }

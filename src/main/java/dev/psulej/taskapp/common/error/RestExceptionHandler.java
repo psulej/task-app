@@ -9,7 +9,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @RestControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
-
     @ExceptionHandler(ValidationException.class)
     public ResponseEntity<ValidationErrorResponse> handleValidationException(ValidationException e) {
         ValidationErrorResponse response = new ValidationErrorResponse(e.errors);
